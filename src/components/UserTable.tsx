@@ -12,7 +12,7 @@ const UserTable = () => {
 
   useEffect(() => {
     setLoading(true);
-    const { request, cancel } = userService.getAllUsers();
+    const { request, cancel } = userService.getAll<User>();
     request
       .then((res) => {
         setLoading(false);
@@ -36,7 +36,7 @@ const UserTable = () => {
     const originalUsers = [...users];
     const updatedUsers = users.filter((u) => u.id !== user.id);
     setUsers(updatedUsers);
-    userService.deleteUser(user.id).catch((err) => {
+    userService.delete(user.id).catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
@@ -47,7 +47,7 @@ const UserTable = () => {
     const newUser = { id: 0, name: "Dugi" };
     setUsers([...users, newUser]);
     userService
-      .createUser(newUser)
+      .create(newUser)
       .then((res) => setUsers([...users, res.data]))
       .catch((err) => {
         setError(err.message);
@@ -61,7 +61,7 @@ const UserTable = () => {
     const updatedUser = { ...user, name: user.name + "!" };
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
 
-    UserService.updateUser(updatedUser).catch((err) => {
+    UserService.update(updatedUser).catch((err) => {
       setUsers(originalUsers);
       err.message;
     });
@@ -69,9 +69,6 @@ const UserTable = () => {
 
   return (
     <>
-      <button className="btn btn-info" onClick={addUser}>
-        AddUser
-      </button>
       {error && <p className="text-danger">{error}</p>}
       {isLoading ? (
         <div className="spinner-border"></div>
@@ -110,6 +107,9 @@ const UserTable = () => {
           </tbody>
         </table>
       )}
+      <button className="btn btn-info" onClick={addUser}>
+        AddUser
+      </button>
     </>
   );
 };
